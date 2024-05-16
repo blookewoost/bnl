@@ -42,7 +42,7 @@ RawSocket::RawSocket(const char* interface) {
 std::vector<char> RawSocket::read(std::size_t buffer_size) {
 
     std::vector<char> buf(buffer_size);
-    int read = recvfrom(sock, buf.data(), buffer_size, 0, &saddr, (socklen_t *)&s_addr_len);
+    int read = recvfrom(sock, buf.data(), buffer_size, 0, saddr, (socklen_t *)&s_addr_len);
 
     if (read<0) {
         printf("Call to recvfrom failed with error %d\n", errno);
