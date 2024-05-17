@@ -1,7 +1,4 @@
 #include "UDPSender.h"
-#include <string>
-#include <sys/socket.h>
-
 
 UDPSender::UDPSender(std::string& ip, int port) {
 
@@ -12,7 +9,7 @@ UDPSender::UDPSender(std::string& ip, int port) {
     }
 
     saddr.sin_family = AF_INET;
-    saddr.sin_port = port;
+    saddr.sin_port = htons(port);
     if (inet_pton(AF_INET, ip.c_str(), &saddr.sin_addr) < 0) {
         printf("An invalid IP address was provided! inet_pton failed.");
     }
