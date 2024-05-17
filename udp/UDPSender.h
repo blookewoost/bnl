@@ -1,11 +1,12 @@
 #include <string>
 #include <sys/socket.h>
+#include <vector>
 #include <arpa/inet.h>
 
 class UDPSender{
     public:
-        UDPSender::UDPSender();
-        UDPSender::UDPSender(std::string& ip, int port);
+        UDPSender(std::string& ip, int port);
+        bool send_bytes(std::vector<char> buffer);
     private:
         int sock;
         struct sockaddr_in saddr;
