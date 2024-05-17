@@ -16,3 +16,15 @@ UDPReceiver::UDPReceiver(int port) {
         printf("Binding the socket failed!");
     }
 }
+
+std::vector<char> UDPReceiver::read(std::size_t buffersize) {
+    
+    std::vector<char> buffer(buffersize);
+    std::size_t bytesread = recvfrom(sock, buffer.data(), buffersize, 0, (struct sockaddr*)&saddr, (socklen_t*)&s_addr_len);
+
+    if (bytesread<0) {
+        printf("The recvfrom() call has failed!");
+    } else {
+        return buffer;
+    }
+}
