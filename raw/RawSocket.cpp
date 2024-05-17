@@ -23,6 +23,8 @@ RawSocket::RawSocket(const char* interface) {
         //figure out how to return an error object
     }
 
+    s_addr_len = sizeof(saddr);
+
     // Specify the adapter we want to listen on
     struct ifreq ifr;
     memset(&ifr, 0, sizeof(ifr));
@@ -39,8 +41,6 @@ RawSocket::RawSocket(const char* interface) {
 std::vector<char> RawSocket::read(std::size_t buffer_size) {
 
     std::vector<char> buf(buffer_size);
-    struct sockaddr saddr;
-    s_addr_len = sizeof(saddr);
     
     int read = recvfrom(sock, buf.data(), buffer_size, 0, &saddr, (socklen_t *)&s_addr_len);
 
