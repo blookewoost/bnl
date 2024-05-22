@@ -10,4 +10,6 @@ class TCPListener{
         int s_addr_len;
     public:
         TCPListener(int port);
+        bool start_listening(int timeout);
+        int accept_connection();
 };

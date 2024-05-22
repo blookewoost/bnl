@@ -19,3 +19,25 @@ TCPListener::TCPListener(int port) {
     }
 };
 
+bool TCPListener::start_listening(int timeout) {
+    if (listen(sock, SOMAXCONN) < 0) {
+        printf("Failed to start listening!");
+        return false;
+    }
+    return true;
+}
+
+int TCPListener::accept_connection() {
+    struct sockaddr_in cli_addr;
+    int cli_addr_len = sizeof(cli_addr);
+
+    int cli_sock = accept(sock, (sockaddr *)&cli_addr, (socklen_t*)&cli_addr_len);
+    if (cli_sock < 0) {
+        printf("accept() failed to return a valid client socket!");
+        return -1;
+    } else {
+        //return the client socket
+        return cli_sock;
+    }
+}
+
