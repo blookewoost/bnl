@@ -25,6 +25,26 @@ bool TCPClient::connectToListener() {
     } else {
         return true;
     }
+}
 
+bool TCPClient::send_bytes(std::vector<char> buffer) {
+    ssize_t sent_bytes = send(sock, buffer.data(), buffer.size(), 0);
+    if (sent_bytes == buffer.size()) {
+        return true;
+    } else {
+        printf("Something went wrong with the send_bytes function!");
+        return false;
+    }
+}
+
+std::vector<char> TCPClient::receive_bytes(ssize_t buffersize) {
+    std::vector<char> buffer(buffersize);
+    ssize_t received_bytes = recv(sock, buffer.data(), buffer.size(), 0);
+    
+    if(received_bytes < 0) {
+        printf("Something went wrong with the call to recv()");
+    } else {
+        return buffer;
+    }
 }
 
