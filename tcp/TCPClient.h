@@ -10,7 +10,7 @@ class TCPClient{
         int s_addr_len;
     public:
         TCPClient(std::string& ip, int port);
-        bool connectToListener();
+        bool connect_to_listener();
         bool send_bytes(std::vector<char> buffer);
         std::vector<char> receive_bytes(ssize_t buffersize);
 };

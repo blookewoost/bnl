@@ -18,7 +18,7 @@ TCPClient::TCPClient(std::string& ip, int port) {
     s_addr_len = sizeof(saddr);
 };
 
-bool TCPClient::connectToListener() {
+bool TCPClient::connect_to_listener() {
     if (connect(sock, (struct sockaddr*)&saddr, s_addr_len) < 0) {
         printf("An error occured while trying to connect to TCP Listener!");
         return false;

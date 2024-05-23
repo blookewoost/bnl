@@ -19,7 +19,7 @@ TCPListener::TCPListener(int port) {
     }
 };
 
-bool TCPListener::start_listening(int timeout) {
+bool TCPListener::start_listening() {
     if (listen(sock, SOMAXCONN) < 0) {
         printf("Failed to start listening!");
         return false;
