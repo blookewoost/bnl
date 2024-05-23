@@ -12,4 +12,6 @@ class TCPListener{
         TCPListener(int port);
         bool start_listening(int timeout);
         int accept_connection();
+        bool send_bytes(int cli_sock, std::vector<char> buffer);
+        std::vector<char> receive_bytes(int cli_sock, ssize_t buffersize);
 };

@@ -41,3 +41,26 @@ int TCPListener::accept_connection() {
     }
 }
 
+std::vector<char> TCPListener::receive_bytes(int cli_sock, ssize_t buffersize) {
+
+    std::vector<char> buffer(buffersize);
+
+    ssize_t receivedBytes = recv(cli_sock, buffer.data(), buffer.size(), 0);
+    if (receivedBytes < 0) {
+        printf("An error occurred during the recv() call!");
+    }
+
+    return buffer;
+}
+
+bool TCPListener::send_bytes(int cli_sock, std::vector<char> buffer) {
+
+    ssize_t sent_bytes = send(cli_sock, buffer.data(), buffer.size(), 0);
+
+    if (sent_bytes == buffer.size()) {
+        return true;
+    } 
+
+    printf("Something went wrong in the call to send()!");
+}
+
