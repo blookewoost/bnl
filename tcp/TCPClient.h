@@ -1,4 +1,5 @@
 #include <string>
+#include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <vector>
@@ -10,6 +11,7 @@ class TCPClient{
         int s_addr_len;
     public:
         TCPClient(std::string& ip, int port);
+        ~TCPClient();
         bool connect_to_listener();
         bool send_bytes(std::vector<char> buffer);
         std::vector<char> receive_bytes(ssize_t buffersize);

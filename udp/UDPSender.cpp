@@ -17,6 +17,10 @@ UDPSender::UDPSender(std::string& ip, int port) {
     s_addr_len = sizeof(saddr);
 }
 
+UDPSender::~UDPSender() {
+    close(sock);
+}
+
 bool UDPSender::send_bytes(std::vector<char> buffer) {
     ssize_t sent_bytes = sendto(sock, buffer.data(), buffer.size(), 0, (struct sockaddr*)&saddr, s_addr_len);
     if(buffer.size() == sent_bytes) {

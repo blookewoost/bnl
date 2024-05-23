@@ -17,6 +17,10 @@ UDPReceiver::UDPReceiver(int port) {
     }
 }
 
+UDPReceiver::~UDPReceiver(){
+    close(sock);
+}
+
 std::vector<char> UDPReceiver::read(std::size_t buffersize) {
     
     std::vector<char> buffer(buffersize);

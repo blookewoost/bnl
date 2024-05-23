@@ -19,6 +19,10 @@ TCPListener::TCPListener(int port) {
     }
 };
 
+TCPListener::~TCPListener() {
+    close(sock);
+}
+
 bool TCPListener::start_listening() {
     if (listen(sock, SOMAXCONN) < 0) {
         printf("Failed to start listening!");

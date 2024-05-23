@@ -1,4 +1,5 @@
 #include <string>
+#include <unistd.h>
 #include <sys/socket.h>
 #include <vector>
 #include <arpa/inet.h>
