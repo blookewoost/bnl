@@ -3,6 +3,7 @@
 #include <cstdio>
 #include <thread>
 #include <chrono>
+#include <linux/if_ether.h>
 #include "../../udp/UDPReceiver.h"
 #include "../../udp/UDPSender.h"
 
@@ -34,6 +35,12 @@ void snoop_with_rs() {
     RawSocket rs = RawSocket("lo");
     std::vector<char> buf = rs.read(1024);
     // chop up the packet here to see contents.
+    struct ethhdr *eth = (struct ethhdr *)(buf.data());
+    int proto = ntohs(eth->h_proto);
+    if (proto == 0x0800) {
+        printf("Ladies and gentlemen, we got em (IPv4)");
+    }
+    // Dig up our packet tools for this one. We've got some useful classes for this.
 }
 
 int main() {

@@ -7,6 +7,7 @@
 class UDPSender{
     public:
         UDPSender(std::string& ip, int port);
+        ~UDPSender();
         bool send_bytes(std::vector<char> buffer);
     private:
         int sock;
