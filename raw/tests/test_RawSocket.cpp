@@ -1,11 +1,14 @@
 #include "../RawSocket.h"
+#include "../../udp/UDPReceiver.h"
+#include "../../udp/UDPSender.h"
+#include "../packet/Packet.h"
+
 #include <vector>
 #include <cstdio>
 #include <thread>
 #include <chrono>
 #include <linux/if_ether.h>
-#include "../../udp/UDPReceiver.h"
-#include "../../udp/UDPSender.h"
+
 
 // Let's send a UDP packet and snoop on it with our RawSocket
 void send_udp() {
@@ -35,6 +38,8 @@ void snoop_with_rs() {
     RawSocket rs = RawSocket("lo");
     std::vector<char> buf = rs.read(1024);
     // chop up the packet here to see contents.
+
+    Packet packet = Packet(buf.data());
     struct ethhdr *eth = (struct ethhdr *)(buf.data());
     int proto = ntohs(eth->h_proto);
     if (proto == 0x0800) {
