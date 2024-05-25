@@ -1,6 +1,9 @@
 // All of the Packet types inherit from this class, 
 // since all of the packets will have an Ethernet Frame.
 
+#ifndef PACKET_H
+#define PACKET_H
+
 class Packet{
     public:
         Packet();
@@ -11,3 +14,5 @@ class Packet{
         unsigned short eth_proto;
     private:
 };
+
+#endif

@@ -1,7 +1,8 @@
 #include "../RawSocket.h"
 #include "../../udp/UDPReceiver.h"
 #include "../../udp/UDPSender.h"
-#include "../packet/Packet.h"
+#include "../../packet/Packet.h"
+#include "../../utils/lib.h"
 
 #include <vector>
 #include <cstdio>
@@ -40,12 +41,16 @@ void snoop_with_rs() {
     // chop up the packet here to see contents.
 
     Packet packet = Packet(buf.data());
-    struct ethhdr *eth = (struct ethhdr *)(buf.data());
-    int proto = ntohs(eth->h_proto);
-    if (proto == 0x0800) {
-        printf("Ladies and gentlemen, we got em (IPv4)");
-    }
-    // Dig up our packet tools for this one. We've got some useful classes for this.
+    MacPair mp = stringify_mac(packet);
+    printf("Source MAC addr: %s, Dest MAC addr: %s", mp.source_mac.c_str(), mp.dest_mac.c_str());
+
+    // 
+    // struct ethhdr *eth = (struct ethhdr *)(buf.data());
+    // int proto = ntohs(eth->h_proto);
+    // if (proto == 0x0800) {
+    //     printf("Ladies and gentlemen, we got em (IPv4)");
+    // }
+    // // Dig up our packet tools for this one. We've got some useful classes for this.
 }
 
 int main() {
