@@ -41,8 +41,10 @@ void snoop_with_rs() {
     // chop up the packet here to see contents.
 
     Packet packet = Packet(buf.data());
-    MacPair mp = stringify_mac(packet);
-    printf("Source MAC addr: %s, Dest MAC addr: %s", mp.source_mac.c_str(), mp.dest_mac.c_str());
+    // This doesn't work because it's a loopback packet! No MAC addresses here ;)
+    // MacPair mp = stringify_mac(packet);
+
+    printf("Received a packet of protocol: %d", packet.eth_proto);
 
     // 
     // struct ethhdr *eth = (struct ethhdr *)(buf.data());
