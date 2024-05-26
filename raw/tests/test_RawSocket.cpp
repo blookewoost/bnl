@@ -1,8 +1,10 @@
 #include "../RawSocket.h"
+#include "../../packet/IPv4.h"
 #include "../../udp/UDPReceiver.h"
 #include "../../udp/UDPSender.h"
 #include "../../packet/Packet.h"
 #include "../../utils/lib.h"
+#include "../../utils/defines.h"
 
 #include <vector>
 #include <cstdio>
@@ -43,16 +45,15 @@ void snoop_with_rs() {
     Packet packet = Packet(buf.data());
     // This doesn't work because it's a loopback packet! No MAC addresses here ;)
     // MacPair mp = stringify_mac(packet);
+    if (packet.eth_proto != IPv4_P) {
+        // something weird happened.
+        printf("We encountered a packet other than the expected IPv4/UDP packet!");
+    } else {
+        IPv4 ipv4_packet = IPv4(buf.data());
+    }
 
     printf("Received a packet of protocol: %d", packet.eth_proto);
 
-    // 
-    // struct ethhdr *eth = (struct ethhdr *)(buf.data());
-    // int proto = ntohs(eth->h_proto);
-    // if (proto == 0x0800) {
-    //     printf("Ladies and gentlemen, we got em (IPv4)");
-    // }
-    // // Dig up our packet tools for this one. We've got some useful classes for this.
 }
 
 int main() {

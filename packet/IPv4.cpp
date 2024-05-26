@@ -7,14 +7,14 @@ IPv4::IPv4(){
 
 }
 
-IPv4::IPv4(uint_8 *buf) {
+IPv4::IPv4(char *buf) {
 
     IPv4::Get_Ethernet_Frame(buf);
     IPv4::Extract_IP_Header(buf);
 }
 
 
-void IPv4::Extract_IP_Header(uint_8 *buf) {
+void IPv4::Extract_IP_Header(char *buf) {
 
     struct iphdr *ip = (struct iphdr*) (buf + sizeof(struct ethhdr));
 

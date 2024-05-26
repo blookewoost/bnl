@@ -1,6 +1,8 @@
 // All of the Packet types inherit from this class, 
 // since all of the packets will have an Ethernet Frame.
 
+#include <memory>
+
 #ifndef PACKET_H
 #define PACKET_H
 
