@@ -1,10 +1,8 @@
-// All of the Packet types inherit from this class, 
-// since all of the packets will have an Ethernet Frame.
+// All of the Packet objects inherit from this class
+#pragma once
 
 #include <memory>
-
-#ifndef PACKET_H
-#define PACKET_H
+#include <linux/if_ether.h>
 
 class Packet{
     public:
@@ -17,4 +15,15 @@ class Packet{
     private:
 };
 
-#endif
+enum PacketType {
+    ARP,
+    IPv4,
+    IPv6,
+    NotImplemented
+};
+
+enum EthernetProtocol {
+    ARP = 0x0806,
+    IPv4 = 0x0800,
+    IPv6 = 0x86DD
+};
