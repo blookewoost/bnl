@@ -3,9 +3,9 @@
 #include <arpa/inet.h>
 #include <string>
 
-class IPv6 : public Packet{
+class IPv6Packet : public Packet{
     public:
-        IPv6(char *buf);
+        IPv6Packet(char *buf);
         std::string source_addr;
         std::string dest_addr;
     private:

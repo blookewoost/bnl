@@ -1,8 +1,8 @@
 #include "Packet.h"
 
-class IPv4 : public Packet {
+class IPv4Packet : public Packet {
     public:
-        IPv4(char *buf);
+        IPv4Packet(char *buf);
         char * source_ip;
         char * dest_ip;
         unsigned int ip_protocol;

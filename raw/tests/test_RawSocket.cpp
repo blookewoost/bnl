@@ -4,7 +4,6 @@
 #include "../../udp/UDPSender.h"
 #include "../../packet/Packet.h"
 #include "../../utils/lib.h"
-#include "../../utils/defines.h"
 
 #include <vector>
 #include <cstdio>
@@ -40,20 +39,17 @@ void receive_udp() {
 void snoop_with_rs() {
     RawSocket rs = RawSocket("lo");
     std::vector<char> buf = rs.read(1024);
-    // chop up the packet here to see contents.
+    struct ethhdr *eth = (struct ethhdr*) buf.data();
 
-    Packet packet = Packet(buf.data());
-    // This doesn't work because it's a loopback packet! No MAC addresses here ;)
-    // MacPair mp = stringify_mac(packet);
-    if (packet.eth_proto != IPv4_P) {
-        // something weird happened.
-        printf("We encountered a packet other than the expected IPv4/UDP packet!");
-    } else {
+    switch (eth->h_proto)
+    {
+    case EthernetProtocol::IPv4:
         IPv4 ipv4_packet = IPv4(buf.data());
+        break;
+    default:
+        printf("Unexpected packet encounter!");
+        break;
     }
-
-    printf("Received a packet of protocol: %d", packet.eth_proto);
-
 }
 
 int main() {

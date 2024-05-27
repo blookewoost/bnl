@@ -1,16 +1,16 @@
-#include "IPv6.h"
+#include "IPv6Packet.h"
 #include <linux/ipv6.h>
 #include <linux/if_ether.h>
 #include <string>
 #include <arpa/inet.h>
 
-IPv6::IPv6(char *buf) {
+IPv6Packet::IPv6Packet(char *buf) {
 
-    IPv6::Get_Ethernet_Frame(buf);
-    IPv6::Extract_IPv6_Header(buf);
+    IPv6Packet::Get_Ethernet_Frame(buf);
+    IPv6Packet::Extract_IPv6_Header(buf);
 }
 
-void IPv6::Extract_IPv6_Header(char *buf) {
+void IPv6Packet::Extract_IPv6_Header(char *buf) {
 
     struct ipv6hdr *ipv6 = (struct ipv6hdr*) (buf + sizeof(struct ethhdr));
 
@@ -21,7 +21,7 @@ void IPv6::Extract_IPv6_Header(char *buf) {
     char daddr[INET6_ADDRSTRLEN];
 
     // Implicit cast to std::string
-    IPv6::source_addr = inet_ntop(AF_INET6, &source_addr, saddr, sizeof(saddr));
-    IPv6::dest_addr = inet_ntop(AF_INET6, &dest_addr, daddr, sizeof(daddr));
+    IPv6Packet::source_addr = inet_ntop(AF_INET6, &source_addr, saddr, sizeof(saddr));
+    IPv6Packet::dest_addr = inet_ntop(AF_INET6, &dest_addr, daddr, sizeof(daddr));
 
 }
