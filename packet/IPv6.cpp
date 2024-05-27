@@ -4,17 +4,13 @@
 #include <string>
 #include <arpa/inet.h>
 
-IPv6::IPv6() {
-
-}
-
-IPv6::IPv6(uint_8 *buf) {
+IPv6::IPv6(char *buf) {
 
     IPv6::Get_Ethernet_Frame(buf);
     IPv6::Extract_IPv6_Header(buf);
 }
 
-void IPv6::Extract_IPv6_Header(uint_8 *buf) {
+void IPv6::Extract_IPv6_Header(char *buf) {
 
     struct ipv6hdr *ipv6 = (struct ipv6hdr*) (buf + sizeof(struct ethhdr));
 

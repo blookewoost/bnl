@@ -2,7 +2,6 @@
 
 class IPv4 : public Packet {
     public:
-        IPv4();
         IPv4(char *buf);
         char * source_ip;
         char * dest_ip;

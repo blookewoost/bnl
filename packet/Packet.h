@@ -6,7 +6,6 @@
 
 class Packet{
     public:
-        Packet();
         Packet(char *buf);
         void Get_Ethernet_Frame(char *buf);
         char source_mac[6];

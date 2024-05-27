@@ -3,10 +3,6 @@
 #include <linux/ip.h>
 #include <arpa/inet.h>
 
-IPv4::IPv4(){
-
-}
-
 IPv4::IPv4(char *buf) {
 
     IPv4::Get_Ethernet_Frame(buf);

@@ -5,7 +5,6 @@
 
 class IPv6 : public Packet{
     public:
-        IPv6();
         IPv6(char *buf);
         std::string source_addr;
         std::string dest_addr;
