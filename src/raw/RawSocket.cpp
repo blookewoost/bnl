@@ -1,18 +1,4 @@
 #include "RawSocket.h"
-#include <sys/socket.h>
-#include <linux/if_ether.h>
-#include <linux/if.h>
-#include <arpa/inet.h>
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
-#include <cstddef>
-#include <vector>
-
-// Figure out if we can remove this empty constructor.
-RawSocket::RawSocket() {
-
-}
 
 // Create a raw socket and bind it to the specified interface.
 RawSocket::RawSocket(const char* interface) {
@@ -49,4 +35,8 @@ std::vector<char> RawSocket::read(std::size_t buffer_size) {
     } else {
         return buf;
     }
+}
+
+RawSocket::~RawSocket() {
+    close(sock);
 }

@@ -4,7 +4,6 @@
 #include <arpa/inet.h>
 
 IPv4Packet::IPv4Packet(char *buf) {
-
     IPv4Packet::Get_Ethernet_Frame(buf);
     IPv4Packet::Extract_IP_Header(buf);
 }

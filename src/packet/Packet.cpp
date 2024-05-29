@@ -2,6 +2,10 @@
 #include <linux/if_ether.h>
 #include <cstring>
 
+Packet::Packet() {
+    
+}
+
 Packet::Packet(char *buf) {
     Packet::Get_Ethernet_Frame(buf);
 }
