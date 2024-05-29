@@ -1,9 +1,9 @@
-#include "../RawSocket.h"
-#include "../../packet/IPv4.h"
-#include "../../udp/UDPReceiver.h"
-#include "../../udp/UDPSender.h"
-#include "../../packet/Packet.h"
-#include "../../utils/lib.h"
+#include "../../include/raw/RawSocket.h"
+#include "../../include/packet/IPv4Packet.h"
+#include "../../include/udp/UDPReceiver.h"
+#include "../../include/udp/UDPSender.h"
+#include "../../include/packet/Packet.h"
+#include "../../include/utils/lib.h"
 
 #include <vector>
 #include <cstdio>
@@ -44,7 +44,7 @@ void snoop_with_rs() {
     switch (eth->h_proto)
     {
     case EthernetProtocol::IPv4:
-        IPv4 ipv4_packet = IPv4(buf.data());
+        IPv4Packet ipv4_packet = IPv4Packet(buf.data());
         break;
     default:
         printf("Unexpected packet encounter!");

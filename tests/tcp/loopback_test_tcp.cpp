@@ -1,5 +1,5 @@
-#include "../TCPClient.h"
-#include "../TCPListener.h"
+#include "../../include/tcp/TCPClient.h"
+#include "../../include/tcp/TCPListener.h"
 #include <thread>
 #include <chrono>
 
