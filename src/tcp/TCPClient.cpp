@@ -1,4 +1,4 @@
-#include "TCPClient.h"
+#include "../../include/tcp/TCPClient.h"
 
 TCPClient::TCPClient(std::string& ip, int port) {
 
