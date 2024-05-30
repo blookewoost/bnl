@@ -41,11 +41,12 @@ void snoop_with_rs() {
     std::vector<char> buf = rs.read(1024);
     struct ethhdr *eth = (struct ethhdr*) buf.data();
 
-    switch (eth->h_proto)
+    switch (htons(eth->h_proto))
     {
-    case EthernetProtocol::IPv4:
+    case EthernetProtocol::IPv4: {
         IPv4Packet ipv4_packet = IPv4Packet(buf.data());
         break;
+    }
     default:
         printf("Unexpected packet encounter!");
         break;

@@ -16,9 +16,9 @@ class Packet{
 };
 
 enum PacketType {
-    ARP,
-    IPv4,
-    IPv6,
+    ARP_PACKET,
+    IPV4_PACKET,
+    IPV6_PACKET,
     NotImplemented
 };
 
