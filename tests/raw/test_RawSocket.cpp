@@ -11,6 +11,14 @@
 #include <chrono>
 #include <linux/if_ether.h>
 
+// Our RawSocket should be able to see any network traffic on the specified adapter.
+// In order to test it, let's send a UDP packet over the loopback adapter and snoop on it with the RawSocket.
+// 
+// We can intercept the packet on the 'wire' and deconstruct it with our Packet tools, then check the payload contents.
+// If the payload we intercept with the RawSocket is the same as what we sent over UDP, then the raw socket performed as expected!
+
+
+
 
 // Let's send a UDP packet and snoop on it with our RawSocket
 void send_udp() {
