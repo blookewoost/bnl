@@ -15,10 +15,40 @@
 // In order to test it, let's send a UDP packet over the loopback adapter and snoop on it with the RawSocket.
 // 
 // We can intercept the packet on the 'wire' and deconstruct it with our Packet tools, then check the payload contents.
-// If the payload we intercept with the RawSocket is the same as what we sent over UDP, then the raw socket performed as expected!
+// If the payload we intercept with the RawSocket is the same as what we sent/received over UDP, then the raw socket performed as expected!
 
 
+bool send_udp_message(std::vector<char> payload, std::string ip, int port) {
+    UDPSender s = UDPSender(ip, port);
+    if (s.send_bytes(payload)) {
+        return true;
+    }
 
+    return false;
+}
+
+std::vector<char> receive_udp_message(int port) {
+    UDPReceiver r = UDPReceiver(port);
+    std::vector<char> payload = r.read(1024); // Hardcoded default buffer size for now. 
+    return payload;
+}
+
+std::vector<char> snoop_with_rawsocket(const char *adapter) {
+    RawSocket rs = RawSocket(adapter);
+    std::vector<char> buf = rs.read(1024);
+    struct ethhdr *eth = (struct ethhdr*) buf.data();
+
+    switch (htons(eth->h_proto))
+    {
+    case EthernetProtocol::IPv4: {
+        IPv4Packet ipv4_packet = IPv4Packet(buf.data());
+        break;
+    }
+    default:
+        printf("Unexpected packet encounter!");
+        break;
+    }
+}
 
 // Let's send a UDP packet and snoop on it with our RawSocket
 void send_udp() {
