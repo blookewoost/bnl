@@ -48,6 +48,8 @@ std::vector<char> snoop_with_rawsocket(std::string adapter) {
             switch (ip->protocol)
             { 
                 case IPv4Protocol::UDP: {
+                    UDPPacket u = UDPPacket(buf.data());
+                    printf("sp: %u, dp: %u, len: %u, check: %u", u.source_port, u.dest_port, u.length, u.checksum);
                     printf("Received a udp packet!");
                     break;
                 }
@@ -109,6 +111,13 @@ void snoop_with_rs() {
 int main() {
 
     //const char *adapter = "lo";
+    int port = 9000;
+    uint16_t netport = htons(port);
+    uint16_t hostport = ntohs(netport);
+
+    printf("%u", netport);
+    printf("%u", hostport);
+    //printf("%u", htons(9000));
 
     // Declare threads.
     std::string adapter = "lo";
