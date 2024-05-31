@@ -1,5 +1,5 @@
 #include "../../include/raw/RawSocket.h"
-#include "../../include/packet/IPv4Packet.h"
+#include "../../include/packet/UDPPacket.h"
 #include "../../include/udp/UDPReceiver.h"
 #include "../../include/udp/UDPSender.h"
 #include "../../include/packet/Packet.h"
@@ -10,6 +10,7 @@
 #include <thread>
 #include <chrono>
 #include <linux/if_ether.h>
+#include <future>
 
 // Our RawSocket should be able to see any network traffic on the specified adapter.
 // In order to test it, let's send a UDP packet over the loopback adapter and snoop on it with the RawSocket.
@@ -33,21 +34,35 @@ std::vector<char> receive_udp_message(int port) {
     return payload;
 }
 
-std::vector<char> snoop_with_rawsocket(const char *adapter) {
-    RawSocket rs = RawSocket(adapter);
+std::vector<char> snoop_with_rawsocket(std::string adapter) {
+
+    RawSocket rs = RawSocket(adapter.c_str());
     std::vector<char> buf = rs.read(1024);
     struct ethhdr *eth = (struct ethhdr*) buf.data();
 
     switch (htons(eth->h_proto))
     {
-    case EthernetProtocol::IPv4: {
-        IPv4Packet ipv4_packet = IPv4Packet(buf.data());
-        break;
+        case EthernetProtocol::IPv4: {
+            struct iphdr *ip = (struct iphdr*) (buf.data() + sizeof(struct ethhdr));
+            printf("proto: %d", ip->protocol);
+            switch (ip->protocol)
+            { 
+                case IPv4Protocol::UDP: {
+                    printf("Received a udp packet!");
+                    break;
+                }
+                case IPv4Protocol::TCP:
+                    break;
+                default:
+                    break;
+            }
+            break;
+        }
+        default:
+            printf("Unexpected packet encounter!");
+            break;
     }
-    default:
-        printf("Unexpected packet encounter!");
-        break;
-    }
+    return buf;
 }
 
 // Let's send a UDP packet and snoop on it with our RawSocket
@@ -93,16 +108,26 @@ void snoop_with_rs() {
 
 int main() {
 
+    //const char *adapter = "lo";
 
     // Declare threads.
-    std::thread rs_thread(snoop_with_rs);
+    std::string adapter = "lo";
+
+    std::future<std::vector<char>> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter);
+
+    //std::thread rs_thread(snoop_with_rawsocket, adapter);
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::thread receiver_thread(receive_udp);
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::thread sender_thread(send_udp);
+
+    std::vector<char> buffer = payload.get();
+
     
-    rs_thread.join();
+    //rs_thread.join();
     receiver_thread.join();
     sender_thread.join();
+
+    return 0;
 
 }

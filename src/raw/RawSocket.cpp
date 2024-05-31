@@ -35,6 +35,7 @@ std::vector<char> RawSocket::read(std::size_t buffer_size) {
     } else {
         return buf;
     }
+
 }
 
 RawSocket::~RawSocket() {

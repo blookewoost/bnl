@@ -1,7 +1,8 @@
 #include "../../include/packet/IPv4Packet.h"
-#include <linux/if_ether.h>
-#include <linux/ip.h>
-#include <arpa/inet.h>
+
+IPv4Packet::IPv4Packet() {
+
+}
 
 IPv4Packet::IPv4Packet(char *buf) {
     IPv4Packet::Get_Ethernet_Frame(buf);

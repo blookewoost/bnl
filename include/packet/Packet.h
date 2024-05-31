@@ -15,15 +15,14 @@ class Packet{
     private:
 };
 
-enum PacketType {
-    ARP_PACKET,
-    IPV4_PACKET,
-    IPV6_PACKET,
-    NotImplemented
-};
 
 enum EthernetProtocol {
     ARP = 0x0806,
     IPv4 = 0x0800,
     IPv6 = 0x86DD
+};
+
+enum IPv4Protocol {
+    UDP = 0x011,
+    TCP = 0x06
 };
