@@ -37,32 +37,44 @@ std::vector<char> receive_udp_message(int port) {
 std::vector<char> snoop_with_rawsocket(std::string adapter) {
 
     RawSocket rs = RawSocket(adapter.c_str());
-    std::vector<char> buf = rs.read(1024);
-    struct ethhdr *eth = (struct ethhdr*) buf.data();
+    std::vector<char> buf;
 
-    switch (htons(eth->h_proto))
-    {
-        case EthernetProtocol::IPv4: {
-            struct iphdr *ip = (struct iphdr*) (buf.data() + sizeof(struct ethhdr));
-            printf("proto: %d", ip->protocol);
-            switch (ip->protocol)
-            { 
-                case IPv4Protocol::UDP: {
-                    UDPPacket u = UDPPacket(buf.data());
-                    printf("sp: %u, dp: %u, len: %u, check: %u", u.source_port, u.dest_port, u.length, u.checksum);
-                    printf("Received a udp packet!");
-                    break;
+
+    bool test_packet_found = false;
+    while(!test_packet_found) {
+        buf = rs.read(1024);
+        struct ethhdr *eth = (struct ethhdr*) buf.data();
+        printf("eth proto: %d", htons(eth->h_proto));
+        switch (htons(eth->h_proto))
+        {
+            case EthernetProtocol::IPv4: {
+                struct iphdr *ip = (struct iphdr*) (buf.data() + sizeof(struct ethhdr));
+                switch (ip->protocol)
+                { 
+                    case IPv4Protocol::UDP: {
+                        UDPPacket u = UDPPacket(buf.data());
+                        printf("%i, %i", u.source_port, u.dest_port);
+                        printf("%i", int(u.dest_port));
+                        if (int(u.dest_port) == 9111) {
+                            printf("We found our test packet! hooray!\n");
+                            
+                            test_packet_found = true;
+                            printf("Returning buf\n");
+                            return buf;
+                        }
+                        break;
+                    }
+                    case IPv4Protocol::TCP:
+                        break;
+                    default:
+                        break;
                 }
-                case IPv4Protocol::TCP:
-                    break;
-                default:
-                    break;
-            }
             break;
         }
         default:
             printf("Unexpected packet encounter!");
             break;
+        }
     }
     return buf;
 }
@@ -71,7 +83,7 @@ std::vector<char> snoop_with_rawsocket(std::string adapter) {
 void send_udp() {
 
     std::string ip = "127.0.0.1";
-    UDPSender sender = UDPSender(ip, 9000);
+    UDPSender sender = UDPSender(ip, 9111);
 
     std::string message = "Hello from UDP sender!";
     std::vector<char> buffer;
@@ -92,7 +104,7 @@ void receive_udp() {
 }
 
 void snoop_with_rs() {
-    RawSocket rs = RawSocket("lo");
+    RawSocket rs = RawSocket("fjdksl");
     std::vector<char> buf = rs.read(1024);
     struct ethhdr *eth = (struct ethhdr*) buf.data();
 
@@ -115,27 +127,27 @@ int main() {
     uint16_t netport = htons(port);
     uint16_t hostport = ntohs(netport);
 
-    printf("%u", netport);
-    printf("%u", hostport);
-    //printf("%u", htons(9000));
-
     // Declare threads.
     std::string adapter = "lo";
 
-    std::future<std::vector<char>> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter);
+    
 
     //std::thread rs_thread(snoop_with_rawsocket, adapter);
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::thread receiver_thread(receive_udp);
+    std::future<std::vector<char>> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter);
+    
     std::this_thread::sleep_for(std::chrono::seconds(1));
     std::thread sender_thread(send_udp);
 
+    
+    sender_thread.join();
     std::vector<char> buffer = payload.get();
+    printf("Received buffer from RS!\n");
+    if (!buffer.empty()) {
+        printf("We found the test packet!");
+    }
+    
 
     
-    //rs_thread.join();
-    receiver_thread.join();
-    sender_thread.join();
 
     return 0;
 
