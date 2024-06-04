@@ -17,6 +17,6 @@ void UDPPacket::Extract_UDP_Header(char *buf) {
 
 void UDPPacket::Extract_Payload(char *buf) {
     ssize_t headersize = sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct udphdr);
-    payload.resize(length);
-    std::copy(buf + headersize, buf + headersize + length, payload.begin());
+    payload.resize(length-sizeof(struct udphdr));
+    std::copy(buf + headersize, buf + headersize + (length-sizeof(struct udphdr)), payload.begin());
 }

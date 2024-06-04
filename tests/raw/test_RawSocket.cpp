@@ -111,11 +111,19 @@ int main() {
     }
 
     std::string received_message(received.payload.begin(), received.payload.end());
-    printf("%s", received_message.c_str());
-    
+    if(received_message.size() == message.size()) {
+        printf("Messages are the same size!\n");
+    } else {
+        printf("Received size %lu, Sent size %lu", received_message.size(), message.size());
+    }
 
-    
-
-    return 0;
+    if (received_message == message) {
+        printf("We passed the test! The messages match!\n");
+        return 0;
+    }
+    else{
+        printf("Whats wrong: %s %s", message.c_str(), received_message.c_str());
+        return -1;
+    }
 
 }
