@@ -3,6 +3,8 @@
 
 #include <memory>
 #include <linux/if_ether.h>
+#include <vector>
+#include <algorithm>
 
 class Packet{
     public:

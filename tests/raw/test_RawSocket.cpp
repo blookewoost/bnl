@@ -16,7 +16,7 @@
 // In order to test it, let's send a UDP packet over the loopback adapter and snoop on it with the RawSocket.
 // 
 // We can intercept the packet on the 'wire' and deconstruct it with our Packet tools, then check the payload contents.
-// If the payload we intercept with the RawSocket is the same as what we sent/received over UDP, then the raw socket performed as expected!
+// If the payload we intercept with the RawSocket is the same as what we sent over UDP, then the raw socket performed as expected!
 
 
 bool send_udp_message(std::vector<char> payload, std::string ip, int port) {
@@ -28,13 +28,8 @@ bool send_udp_message(std::vector<char> payload, std::string ip, int port) {
     return false;
 }
 
-std::vector<char> receive_udp_message(int port) {
-    UDPReceiver r = UDPReceiver(port);
-    std::vector<char> payload = r.read(1024); // Hardcoded default buffer size for now. 
-    return payload;
-}
 
-std::vector<char> snoop_with_rawsocket(std::string adapter) {
+UDPPacket snoop_with_rawsocket(std::string adapter) {
 
     RawSocket rs = RawSocket(adapter.c_str());
     std::vector<char> buf;
@@ -55,12 +50,12 @@ std::vector<char> snoop_with_rawsocket(std::string adapter) {
                         UDPPacket u = UDPPacket(buf.data());
                         printf("%i, %i", u.source_port, u.dest_port);
                         printf("%i", int(u.dest_port));
-                        if (int(u.dest_port) == 9111) {
+                        if (int(u.dest_port) == 9000) {
                             printf("We found our test packet! hooray!\n");
                             
                             test_packet_found = true;
                             printf("Returning buf\n");
-                            return buf;
+                            return u;
                         }
                         break;
                     }
@@ -76,7 +71,6 @@ std::vector<char> snoop_with_rawsocket(std::string adapter) {
             break;
         }
     }
-    return buf;
 }
 
 // Let's send a UDP packet and snoop on it with our RawSocket
@@ -94,57 +88,30 @@ void send_udp() {
     }
 }
 
-void receive_udp() {
-
-    UDPReceiver receiver = UDPReceiver(9000);
-    ssize_t buffersize = 1024;
-    std::vector<char> buffer = receiver.read(buffersize);
-    std::string message(buffer.begin(), buffer.end());
-    printf("Received message!: %s", message.c_str());
-}
-
-void snoop_with_rs() {
-    RawSocket rs = RawSocket("fjdksl");
-    std::vector<char> buf = rs.read(1024);
-    struct ethhdr *eth = (struct ethhdr*) buf.data();
-
-    switch (htons(eth->h_proto))
-    {
-    case EthernetProtocol::IPv4: {
-        IPv4Packet ipv4_packet = IPv4Packet(buf.data());
-        break;
-    }
-    default:
-        printf("Unexpected packet encounter!");
-        break;
-    }
-}
 
 int main() {
 
-    //const char *adapter = "lo";
-    int port = 9000;
-    uint16_t netport = htons(port);
-    uint16_t hostport = ntohs(netport);
-
     // Declare threads.
     std::string adapter = "lo";
+    std::string message = "Hello, raw socket!";
 
-    
+    std::vector<char> buffer;
+    buffer.assign(message.begin(), message.end());
 
-    //std::thread rs_thread(snoop_with_rawsocket, adapter);
-    std::future<std::vector<char>> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter);
+    std::future<UDPPacket> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter);
     
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::thread sender_thread(send_udp);
+    std::thread sender(send_udp_message, buffer, "127.0.0.1", 9000);
 
     
-    sender_thread.join();
-    std::vector<char> buffer = payload.get();
-    printf("Received buffer from RS!\n");
-    if (!buffer.empty()) {
+    sender.join();
+    UDPPacket received = payload.get();
+    if (sizeof(received.payload) > 0) {
         printf("We found the test packet!");
     }
+
+    std::string received_message(received.payload.begin(), received.payload.end());
+    printf("%s", received_message.c_str());
     
 
     

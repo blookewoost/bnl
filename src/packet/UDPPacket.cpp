@@ -4,6 +4,7 @@ UDPPacket::UDPPacket(char *buf) {
     Get_Ethernet_Frame(buf);
     Extract_IP_Header(buf);
     Extract_UDP_Header(buf);
+    Extract_Payload(buf);
 }
 
 void UDPPacket::Extract_UDP_Header(char *buf) {
@@ -12,4 +13,10 @@ void UDPPacket::Extract_UDP_Header(char *buf) {
     dest_port = ntohs(udp->uh_dport);
     length = htons(udp->len);
     checksum = htons(udp->check);
+}
+
+void UDPPacket::Extract_Payload(char *buf) {
+    ssize_t headersize = sizeof(struct ethhdr) + sizeof(struct iphdr) + sizeof(struct udphdr);
+    payload.resize(length);
+    std::copy(buf + headersize, buf + headersize + length, payload.begin());
 }
