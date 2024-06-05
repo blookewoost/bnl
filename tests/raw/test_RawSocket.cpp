@@ -19,6 +19,7 @@
 // If the payload we intercept with the RawSocket is the same as what we sent over UDP, then the raw socket performed as expected!
 
 
+// Send a UDP message
 bool send_udp_message(std::vector<char> payload, std::string ip, int port) {
     UDPSender s = UDPSender(ip, port);
     if (s.send_bytes(payload)) {
@@ -28,18 +29,17 @@ bool send_udp_message(std::vector<char> payload, std::string ip, int port) {
     return false;
 }
 
-
-UDPPacket snoop_with_rawsocket(std::string adapter) {
+// Read packets on the wire until we find the test UDP Packet.
+UDPPacket snoop_with_rawsocket(std::string adapter, int target_port) {
 
     RawSocket rs = RawSocket(adapter.c_str());
     std::vector<char> buf;
 
-
     bool test_packet_found = false;
+
     while(!test_packet_found) {
         buf = rs.read(1024);
         struct ethhdr *eth = (struct ethhdr*) buf.data();
-        printf("eth proto: %d", htons(eth->h_proto));
         switch (htons(eth->h_proto))
         {
             case EthernetProtocol::IPv4: {
@@ -48,13 +48,8 @@ UDPPacket snoop_with_rawsocket(std::string adapter) {
                 { 
                     case IPv4Protocol::UDP: {
                         UDPPacket u = UDPPacket(buf.data());
-                        printf("%i, %i", u.source_port, u.dest_port);
-                        printf("%i", int(u.dest_port));
-                        if (int(u.dest_port) == 9000) {
-                            printf("We found our test packet! hooray!\n");
-                            
+                        if (int(u.dest_port) == target_port) {
                             test_packet_found = true;
-                            printf("Returning buf\n");
                             return u;
                         }
                         break;
@@ -67,63 +62,47 @@ UDPPacket snoop_with_rawsocket(std::string adapter) {
             break;
         }
         default:
-            printf("Unexpected packet encounter!");
+            printf("Skipping unrelated packet...\n");
             break;
         }
-    }
-}
-
-// Let's send a UDP packet and snoop on it with our RawSocket
-void send_udp() {
-
-    std::string ip = "127.0.0.1";
-    UDPSender sender = UDPSender(ip, 9111);
-
-    std::string message = "Hello from UDP sender!";
-    std::vector<char> buffer;
-    buffer.assign(message.begin(), message.end());
-
-    if (sender.send_bytes(buffer)) {
-        
     }
 }
 
 
 int main() {
 
-    // Declare threads.
+    // Declare constants... These should probably be arguments
     std::string adapter = "lo";
     std::string message = "Hello, raw socket!";
+    std::string ip = "127.0.0.1";
+    int target_port = 9000;
 
-    std::vector<char> buffer;
-    buffer.assign(message.begin(), message.end());
+    // Declare a buffer with our message inside.
+    std::vector<char> buffer(message.begin(), message.end());
 
-    std::future<UDPPacket> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter);
+    // Create a future, running the snoop function asynchronously.
+    std::future<UDPPacket> payload = std::async(std::launch::async, snoop_with_rawsocket, adapter, target_port);
     
+    // Wait
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::thread sender(send_udp_message, buffer, "127.0.0.1", 9000);
 
-    
+    // Create a thread for our udp send operation and allow it to finish.
+    std::thread sender(send_udp_message, buffer, ip, target_port);
     sender.join();
+
+    // Collect our UDP packet from the future we created earlier.
     UDPPacket received = payload.get();
+
+    // Check the contents of what we received.
     if (sizeof(received.payload) > 0) {
-        printf("We found the test packet!");
-    }
-
-    std::string received_message(received.payload.begin(), received.payload.end());
-    if(received_message.size() == message.size()) {
-        printf("Messages are the same size!\n");
+        std::string received_message(received.payload.begin(), received.payload.end());
+        if (received_message == message) {
+            printf("Test passed! The messages match!\n");
+            return 0;
+        } else {
+            printf("Something is wrong, the messages are not equivalent!\n");
+        }
     } else {
-        printf("Received size %lu, Sent size %lu", received_message.size(), message.size());
+        printf("Received an empty payload!\n");
     }
-
-    if (received_message == message) {
-        printf("We passed the test! The messages match!\n");
-        return 0;
-    }
-    else{
-        printf("Whats wrong: %s %s", message.c_str(), received_message.c_str());
-        return -1;
-    }
-
 }
