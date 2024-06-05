@@ -11,8 +11,8 @@ void UDPPacket::Extract_UDP_Header(char *buf) {
     struct udphdr *udp = (struct udphdr*) (buf + (sizeof(struct ethhdr) + sizeof(struct iphdr)));
     source_port = ntohs(udp->uh_sport);
     dest_port = ntohs(udp->uh_dport);
-    length = htons(udp->len);
-    checksum = htons(udp->check);
+    length = ntohs(udp->len);
+    checksum = ntohs(udp->check);
 }
 
 void UDPPacket::Extract_Payload(char *buf) {
