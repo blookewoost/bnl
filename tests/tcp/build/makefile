@@ -9,7 +9,7 @@ TCP_SRC := $(wildcard $(TCP_DIR)/*.cpp) # match all cpp files
 
 TEST_SRC := ../loopback_test_tcp.cpp
 
-$(TARGET): $(UDP_SRC) $(RS_SRC) $(PACKET_SRC) $(TEST_SRC)
+$(TARGET): $(TCP_SRC) $(TEST_SRC)
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
