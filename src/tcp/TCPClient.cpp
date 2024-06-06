@@ -12,7 +12,7 @@ TCPClient::TCPClient(std::string& ip, int port) {
     saddr.sin_port = htons(port);
 
     if (inet_pton(AF_INET, ip.c_str(), &saddr.sin_addr) <= 0) {
-        printf("%d is an invalid IP address.", ip);
+        printf("%s is an invalid IP address.", ip.c_str());
     }
 
     s_addr_len = sizeof(saddr);
@@ -46,9 +46,11 @@ std::vector<char> TCPClient::receive_bytes(ssize_t buffersize) {
     ssize_t received_bytes = recv(sock, buffer.data(), buffer.size(), 0);
     
     if(received_bytes < 0) {
-        printf("Something went wrong with the call to recv()");
+        printf("Something went wrong with the call to recv()"); // need improved error handling
     } else {
         return buffer;
     }
+
+    return buffer;
 }
 

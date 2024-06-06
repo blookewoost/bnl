@@ -66,5 +66,6 @@ bool TCPListener::send_bytes(int cli_sock, std::vector<char> buffer) {
     } 
 
     printf("Something went wrong in the call to send()!");
+    return false;
 }
 
