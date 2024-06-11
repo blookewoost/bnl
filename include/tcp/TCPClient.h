@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 #include <sys/socket.h>
+#include <stdexcept>
 #include <vector>
 
 class TCPClient{

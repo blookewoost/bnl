@@ -5,7 +5,7 @@ TCPListener::TCPListener(int port) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if(sock<0) {
-        printf("An error occured while creating the socket!");
+        throw std::runtime_error({"TCPListener socket creation failed! errno: %d", errno});
     }
 
     saddr.sin_family = AF_INET;
@@ -15,7 +15,7 @@ TCPListener::TCPListener(int port) {
     s_addr_len = sizeof(saddr);
 
     if (bind(sock, (struct sockaddr*)&saddr, s_addr_len) < 0) {
-        printf("Binding the socket to saddr failed!");
+        throw std::runtime_error({"TCPListener failed to bind to socket. Check the port number."});
     }
 };
 
@@ -25,7 +25,6 @@ TCPListener::~TCPListener() {
 
 bool TCPListener::start_listening() {
     if (listen(sock, SOMAXCONN) < 0) {
-        printf("Failed to start listening!");
         return false;
     }
     return true;
@@ -37,10 +36,8 @@ int TCPListener::accept_connection() {
 
     int cli_sock = accept(sock, (sockaddr *)&cli_addr, (socklen_t*)&cli_addr_len);
     if (cli_sock < 0) {
-        printf("accept() failed to return a valid client socket!");
         return -1;
     } else {
-        //return the client socket
         return cli_sock;
     }
 }
@@ -51,7 +48,7 @@ std::vector<char> TCPListener::receive_bytes(int cli_sock, ssize_t buffersize) {
 
     ssize_t receivedBytes = recv(cli_sock, buffer.data(), buffer.size(), 0);
     if (receivedBytes < 0) {
-        printf("An error occurred during the recv() call!");
+        throw std::runtime_error({"Something unexpected occurred when attempting to receive bytes"}); // is this even possible?
     }
 
     return buffer;
@@ -63,9 +60,7 @@ bool TCPListener::send_bytes(int cli_sock, std::vector<char> buffer) {
 
     if (sent_bytes == buffer.size()) {
         return true;
-    } 
-
-    printf("Something went wrong in the call to send()!");
+    }
     return false;
 }
 

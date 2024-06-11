@@ -12,7 +12,7 @@ void server() {
         std::vector<char> buffer = listener.receive_bytes(cli_sock, buffersize);
 
         std::string message(buffer.begin(), buffer.end());
-        printf("Received a message from the client: %s", message.c_str());
+        printf("Received a message from the client:\n %s", message.c_str());
     }
 
     
