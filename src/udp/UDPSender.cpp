@@ -5,13 +5,13 @@ UDPSender::UDPSender(std::string& ip, int port) {
     // Create a UDP socket
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock<0) {
-        printf("Socket creation failed with error: %d", errno);
+        throw std::runtime_error({"UDPSender socket creation failed! errno: %d", errno});
     }
 
     saddr.sin_family = AF_INET;
     saddr.sin_port = htons(port);
     if (inet_pton(AF_INET, ip.c_str(), &saddr.sin_addr) < 0) {
-        printf("An invalid IP address was provided! inet_pton failed.");
+        throw std::runtime_error({"UDPSender cannot use invalid IP address: %s", ip.c_str()});
     }
 
     s_addr_len = sizeof(saddr);
@@ -26,7 +26,6 @@ bool UDPSender::send_bytes(std::vector<char> buffer) {
     if(buffer.size() == sent_bytes) {
         return true;
     } else {
-        printf("Something unexpected happened, and the sendto() operation failed!");
         return false;
     }
 }

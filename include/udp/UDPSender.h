@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <vector>
+#include <stdexcept>
 #include <arpa/inet.h>
 
 class UDPSender{

@@ -20,7 +20,7 @@ void receiver() {
     std::vector<char> buffer = receiver.read(buffersize);
 
     std::string message(buffer.begin(), buffer.end());
-    printf("Received a message from the sender: %s", message.c_str());
+    printf("Received a message from the sender:\n %s", message.c_str());
 }
 
 

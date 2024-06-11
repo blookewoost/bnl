@@ -1,6 +1,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <cstdio>
+#include <stdexcept>
 #include <vector>
 
 class UDPReceiver{
