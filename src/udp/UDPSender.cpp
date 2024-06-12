@@ -5,13 +5,13 @@ UDPSender::UDPSender(std::string& ip, int port) {
     // Create a UDP socket
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock<0) {
-        throw std::runtime_error({"UDPSender socket creation failed! errno: %d", errno});
+        throw std::runtime_error("UDPSender socket creation failed!");
     }
 
     saddr.sin_family = AF_INET;
     saddr.sin_port = htons(port);
     if (inet_pton(AF_INET, ip.c_str(), &saddr.sin_addr) < 0) {
-        throw std::runtime_error({"UDPSender cannot use invalid IP address: %s", ip.c_str()});
+        throw std::runtime_error("UDPSender cannot use invalid IP address");
     }
 
     s_addr_len = sizeof(saddr);

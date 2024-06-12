@@ -4,7 +4,7 @@ UDPReceiver::UDPReceiver(int port) {
 
     sock = socket(AF_INET, SOCK_DGRAM, 0);
     if (sock<0) {
-        throw std::runtime_error({"UDPReceiver socket creation failed! errno: %d", errno});
+        throw std::runtime_error("UDPReceiver socket creation failed!");
     }
 
     saddr.sin_family = AF_INET;
@@ -14,7 +14,7 @@ UDPReceiver::UDPReceiver(int port) {
     s_addr_len = sizeof(saddr);
 
     if (bind(sock, (struct sockaddr*)&saddr, s_addr_len) <0) {
-        throw std::runtime_error({"UDPReceiver failed to bind to the socket. Check the port number"});
+        throw std::runtime_error("UDPReceiver failed to bind to the socket. Check the port number");
     }
 }
 
@@ -28,7 +28,7 @@ std::vector<char> UDPReceiver::read(std::size_t buffersize) {
     std::size_t bytesread = recvfrom(sock, buffer.data(), buffersize, 0, (struct sockaddr*)&saddr, (socklen_t*)&s_addr_len);
 
     if (bytesread<0) {
-        throw std::runtime_error({"Something unexpected occurred when attempting to receive bytes"}); // is this even possible?
+        throw std::runtime_error("UDPReceiver: Something unexpected occurred when attempting to receive bytes"); // is this even possible?
     } else {
         return buffer;
     }

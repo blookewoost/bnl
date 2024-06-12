@@ -6,6 +6,7 @@
 #include <arpa/inet.h>
 #include <stdio.h>
 #include <errno.h>
+#include <stdexcept>
 #include <string.h>
 #include <cstddef>
 

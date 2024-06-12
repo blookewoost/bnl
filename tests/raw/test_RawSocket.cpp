@@ -32,39 +32,47 @@ bool send_udp_message(std::vector<char> payload, std::string ip, int port) {
 // Read packets on the wire until we find the test UDP Packet.
 UDPPacket snoop_with_rawsocket(std::string adapter, int target_port) {
 
-    RawSocket rs = RawSocket(adapter.c_str());
-    std::vector<char> buf;
+    try
+    {
+        RawSocket rs = RawSocket(adapter.c_str());
+        std::vector<char> buf;
 
-    bool test_packet_found = false;
+        bool test_packet_found = false;
 
-    while(!test_packet_found) {
-        buf = rs.read(1024);
-        struct ethhdr *eth = (struct ethhdr*) buf.data();
-        switch (htons(eth->h_proto))
-        {
-            case EthernetProtocol::IPv4: {
-                struct iphdr *ip = (struct iphdr*) (buf.data() + sizeof(struct ethhdr));
-                switch (ip->protocol)
-                { 
-                    case IPv4Protocol::UDP: {
-                        UDPPacket u = UDPPacket(buf.data());
-                        if (int(u.dest_port) == target_port) {
-                            test_packet_found = true;
-                            return u;
+        while(!test_packet_found) {
+            buf = rs.read(1024);
+            struct ethhdr *eth = (struct ethhdr*) buf.data();
+            switch (htons(eth->h_proto))
+            {
+                case EthernetProtocol::IPv4: {
+                    struct iphdr *ip = (struct iphdr*) (buf.data() + sizeof(struct ethhdr));
+                    switch (ip->protocol)
+                    { 
+                        case IPv4Protocol::UDP: {
+                            UDPPacket u = UDPPacket(buf.data());
+                            if (int(u.dest_port) == target_port) {
+                                test_packet_found = true;
+                                return u;
+                            }
+                            break;
                         }
-                        break;
+                        case IPv4Protocol::TCP:
+                            break;
+                        default:
+                            break;
                     }
-                    case IPv4Protocol::TCP:
-                        break;
-                    default:
-                        break;
-                }
-            break;
+                break;
+            }
+            default:
+                printf("Skipping unrelated packet...\n");
+                break;
+            }
         }
-        default:
-            printf("Skipping unrelated packet...\n");
-            break;
-        }
+    }
+    catch(const std::runtime_error& e)
+    {
+        std::cerr << e.what() << '\n';
+        exit(EXIT_FAILURE);
     }
 }
 

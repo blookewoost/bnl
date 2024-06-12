@@ -5,14 +5,14 @@ TCPClient::TCPClient(std::string& ip, int port) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if(sock<0) {
-        throw std::runtime_error({"TCPClient socket creation failed! errno: %d", errno});
+        throw std::runtime_error("TCPClient socket creation failed!");
     }
 
     saddr.sin_family = AF_INET;
     saddr.sin_port = htons(port);
 
     if (inet_pton(AF_INET, ip.c_str(), &saddr.sin_addr) <= 0) {
-        throw std::runtime_error({"TCPClient cannot use invalid IP address: %s", ip.c_str()});
+        throw std::runtime_error("TCPClient cannot use invalid IP address");
     }
 
     s_addr_len = sizeof(saddr);
@@ -44,7 +44,7 @@ std::vector<char> TCPClient::receive_bytes(ssize_t buffersize) {
     ssize_t received_bytes = recv(sock, buffer.data(), buffer.size(), 0);
     
     if(received_bytes < 0) {
-        throw std::runtime_error({"Something unexpected occurred when attempting to receive bytes"}); // is this even possible?
+        throw std::runtime_error("Something unexpected occurred when attempting to receive bytes"); // is this even possible?
     } else {
         return buffer;
     }

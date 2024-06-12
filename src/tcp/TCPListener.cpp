@@ -5,7 +5,7 @@ TCPListener::TCPListener(int port) {
     sock = socket(AF_INET, SOCK_STREAM, 0);
 
     if(sock<0) {
-        throw std::runtime_error({"TCPListener socket creation failed! errno: %d", errno});
+        throw std::runtime_error("TCPListener socket creation failed!");
     }
 
     saddr.sin_family = AF_INET;
@@ -15,7 +15,7 @@ TCPListener::TCPListener(int port) {
     s_addr_len = sizeof(saddr);
 
     if (bind(sock, (struct sockaddr*)&saddr, s_addr_len) < 0) {
-        throw std::runtime_error({"TCPListener failed to bind to socket. Check the port number."});
+        throw std::runtime_error("TCPListener failed to bind to socket. Check the port number.");
     }
 };
 
@@ -48,7 +48,7 @@ std::vector<char> TCPListener::receive_bytes(int cli_sock, ssize_t buffersize) {
 
     ssize_t receivedBytes = recv(cli_sock, buffer.data(), buffer.size(), 0);
     if (receivedBytes < 0) {
-        throw std::runtime_error({"Something unexpected occurred when attempting to receive bytes"}); // is this even possible?
+        throw std::runtime_error("TCPListener: Something unexpected occurred when attempting to receive bytes"); // is this even possible?
     }
 
     return buffer;
