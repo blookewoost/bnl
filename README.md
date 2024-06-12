@@ -1,10 +1,11 @@
 ## Blooke's Networking Library (BNL)
 
-Some useful classes for writing networking code.
-Example: Sending a UDP packet...
+Networking utilities for common socket operations. Use BNL for any basic TCP/UDP networking code, or to create a RawSocket and explore the network stack with the /packet utilities. 
+
+Example: Sending a UDP Packet
 
 ```c++
-#include "bnl/include/udp/UDPSender.h"
+#include "bnl/include/udp/UDPSender.h" //also includes <string>
 
 int main() {
   
@@ -17,12 +18,15 @@ int main() {
 
   // Create a buffer with std::vector<char>
   std::vector<char> buffer(message.begin(), message.end());
+
+  // Send it!
+  u.send_bytes(buffer);
 }
 ```
 
-## Implementation notes.
+## Implementation notes
 
-Interacting with a socket (sending data or receiving data) via these classes will require the use of a std::vector<char>. This is much easier to use than raw buffers and makes for a clean, modern C++ experience when using BNL.
+As you can see in the above example, the UDPSender::send_bytes method accepts a std::vector<char> as the buffer to send. This is common amongst all the tools in this library. Using std::vector keeps our code safe and is more approachable than working with raw buffers.
 
 ## Tests
 
