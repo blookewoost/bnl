@@ -30,26 +30,62 @@ As you can see in the above example, the UDPSender::send_bytes method accepts a 
 
 Continuing, here's what the code for a TCP Client/Server pair would look like...
 
+## TCPListener (Server)
+
 ```c++
 #include "bnl/include/tcp/TCPListener.h"
 
-
-#Server code
 void main() {
   // Create a listening TCP object...
   TCPListener l = TCPListener(9000); // port number
   if (listener.start_listening()) {
   // obtain a socket file descriptor by accepting a connection.
     int cli_sock = listener.accept_connection();
-}
+    // How many bytes do we want to read?
+    ssize_t buffersize = 1024;
+    // Receive bytes from the socket
+    std::vector<char> buffer = listener.receive_bytes(cli_sock, buffersize);
+
+    // What did they say? 
+    std::string message(buffer.begin(), buffer.end());
+    printf("Received a message from the client:\n %s", message.c_str());
+  }
 
 }
 
 ```
 
+and of course, the client... 
 
+## TCPClient (Client)
 
+```c++
 
+#include "bnl/include/tcp/TCPClient.h"
+
+void client() {
+    std::string ip = "127.0.0.1";
+    TCPClient client = TCPClient(ip, 9000);
+
+    if (client.connect_to_listener()) {
+        ssize_t buffersize = 1024;
+        std::string message = "Hello from the client!";
+        std::vector<char> data;
+
+        // what a lovely method. thanks std::vector :)
+        data.assign(message.begin(), message.end());
+        if (!client.send_bytes(data)) {
+            printf("Something went wrong!");
+        }
+
+    }
+
+}
+```
+
+These objects should prove useful for writing some pretty solid networking code. Of course, there's always room for improvement! 
+
+and one more thing, the RawSocket... this is my personal favorite. Hoping to go into a little more detail about that one.
 
 ## Tests
 
