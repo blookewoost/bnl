@@ -24,9 +24,32 @@ int main() {
 }
 ```
 
-## Implementation notes
+#NOTE:
 
-As you can see in the above example, the UDPSender::send_bytes method accepts a std::vector<char> as the buffer to send. This is common amongst all the tools in this library. Using std::vector keeps our code safe and is more approachable than working with raw buffers.
+As you can see in the above example, the UDPSender::send_bytes method accepts a std::vector<char> as the buffer to send. This is common amongst all the tools in this library. Using std::vector keeps our code safe and is more approachable than working with raw buffers. 
+
+Continuing, here's what the code for a TCP Client/Server pair would look like...
+
+```c++
+#include "bnl/include/tcp/TCPListener.h"
+
+
+#Server code
+void main() {
+  // Create a listening TCP object...
+  TCPListener l = TCPListener(9000); // port number
+  if (listener.start_listening()) {
+  // obtain a socket file descriptor by accepting a connection.
+    int cli_sock = listener.accept_connection();
+}
+
+}
+
+```
+
+
+
+
 
 ## Tests
 
