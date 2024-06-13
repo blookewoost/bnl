@@ -7,9 +7,9 @@ void sender() {
     std::string ip = "127.0.0.1";
     UDPSender sender = UDPSender(ip, 9000);
     std::string message = "Hello from the sender!";
-    std::vector<char> buffer;
+    std::vector<char> buffer(message.begin(), message.end());
 
-    buffer.assign(message.begin(), message.end());
+    //buffer.assign(message.begin(), message.end());
     sender.send_bytes(buffer);
 }
 
