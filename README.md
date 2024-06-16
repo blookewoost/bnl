@@ -35,16 +35,16 @@ Continuing, here's what the code for a TCP Client/Server pair would look like...
 ```c++
 #include "bnl/include/tcp/TCPListener.h"
 
-void main() {
+void server() {
   // Create a listening TCP object...
   TCPListener l = TCPListener(9000); // port number
-  if (listener.start_listening()) {
+  if (l.start_listening()) {
   // obtain a socket file descriptor by accepting a connection.
-    int cli_sock = listener.accept_connection();
+    int cli_sock = l.accept_connection();
     // How many bytes do we want to read?
     ssize_t buffersize = 1024;
     // Receive bytes from the socket
-    std::vector<char> buffer = listener.receive_bytes(cli_sock, buffersize);
+    std::vector<char> buffer = l.receive_bytes(cli_sock, buffersize);
 
     // What did they say? 
     std::string message(buffer.begin(), buffer.end());
@@ -84,8 +84,20 @@ void client() {
 ```
 
 These objects should prove useful for writing some pretty solid networking code. Of course, there's always room for improvement! 
-
 and one more thing, the RawSocket... this is my personal favorite. Hoping to go into a little more detail about that one.
+
+```c++
+
+#include "bnl/include/raw/RawSocket.h"
+
+int main() {
+  RawSocket r = RawSocket("lo") // provide an interface to open the raw socket on
+  std::size_t buffersize = 1024; // how many bytes to read?
+
+  std::vector<char> buf = r.read(buffersize);
+  //now you can do whatever you want with these bytes!
+}
+```
 
 ## Tests
 
