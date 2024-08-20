@@ -5,7 +5,7 @@ Networking utilities for common socket operations. Use BNL for any basic TCP/UDP
 Example: Sending a UDP Packet
 
 ```c++
-#include "bnl/include/udp/UDPSender.h" //also includes <string>
+#include "bnl/include/udp/UDPSender.h"
 
 int main() {
   
@@ -16,7 +16,7 @@ int main() {
   // Creating a sender object.
   UDPSender u = UDPSender(ip_address, port); 
 
-  // Create a buffer with std::vector<char>
+  // Create a buffer with std::vector
   std::vector<char> buffer(message.begin(), message.end());
 
   // Send it!
@@ -72,7 +72,6 @@ void client() {
         std::string message = "Hello from the client!";
         std::vector<char> data;
 
-        // what a lovely method. thanks std::vector :)
         data.assign(message.begin(), message.end());
         if (!client.send_bytes(data)) {
             printf("Something went wrong!");
@@ -84,7 +83,7 @@ void client() {
 ```
 
 These objects should prove useful for writing some pretty solid networking code. Of course, there's always room for improvement! 
-and one more thing, the RawSocket... this is my personal favorite. Hoping to go into a little more detail about that one.
+and one more thing, the RawSocket... Hoping to go into a little more detail about that one.
 
 ```c++
 
@@ -98,6 +97,10 @@ int main() {
   //now you can do whatever you want with these bytes!
 }
 ```
+
+Once you have received packets from a raw socket, you can use the packet utilities in this library (see /include/packet & /src/packet) to create Packet objects of the specified protocol. 
+
+For an example of this, check out /tests/raw/test_RawSocket.cpp
 
 ## Tests
 
